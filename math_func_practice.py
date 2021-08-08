@@ -1,20 +1,25 @@
 # mathematical functions practice
 vec_a = [1,2,3,4]
-vec_b = [1,2,3,4]
+vec_b = [1,2,3]
 
 def elementwise_multiplication(vec_a, vec_b):
     
-    assert(len(vec_a) == len(vec_b))
-           
-    output = []
-    i = 0
+    try:
+        
+        assert(len(vec_a) == len(vec_b))    
+        output = []
+        i = 0
     
-    for i in range (len(vec_a)):
+        for i in range (len(vec_a)):
         
+            output.append(vec_a[i] * vec_b[i])
         
-        output.append(vec_a[i] * vec_b[i])
+        return output
+    
+    except AssertionError:
         
-    return output
+            print("oops those lists are not the same length.")
+            
 
 output = []
 
