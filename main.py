@@ -1,11 +1,11 @@
 # Neural Network Code!
+import math_func_practice as ma
 
+weights = [0.1,0.2,0]
 
-weight = 0.1
-
-def neural_network(input, weight):
+def neural_network(input, weights):
     
-    prediction = input * weight
+    prediction = ma.weighted_sum(input,weights)
     return prediction
 
 
