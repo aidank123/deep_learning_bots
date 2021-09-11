@@ -4,6 +4,7 @@
 vec_a = [1,2,3,4]
 vec_b = [1,2,3,4]
 
+
 def elementwise_multiplication(vec_a, vec_b):
     
     try:    
