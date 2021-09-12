@@ -1,13 +1,9 @@
 #UPDATES:
 
-#I am having trouble understanding the part where we calculate error and update the weights. Does each input X weight create a prediction (each pixel)
-#that will choose 0 - 9 and then you compare that to the correct label for that image and update that weight accordingly? I suppose that makes
-#sense but it is a pretty roundabout way of doing things. See if you can get that to work for now.
+#Getting there man just hard to understand IDK!!! Keep working
+#Current error:  RuntimeWarning: invalid value encountered in double_scalars -- out[i][j] = vec_a[i] * vec_b[j]
 
-#How do I get the prediction to choose a number 0 - 9? right now it just returns a vector of length 784, elementwise multiplication of inputs
-#and their weights
-
-#I think you need to change the 'correct guesses' vector to be made up of the pixels of the image ur looking at? i am not sure right now. 
+#how do I solve this error first, then see if weight updates make literally any sense whatsoeover
 
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -22,7 +18,7 @@ def neural_network(inputs,weights):
     
     #multiplying each input by each corresponding weight
     
-    prediction = p.elementwise_multiplication(inputs,weights)
+    prediction = p.vect_matrix_multiplication(inputs,weights)
     return prediction
 
 #calling the reader function and setting vars equal to the data
@@ -34,20 +30,31 @@ y = 0
 
 img_num = 0 #what img number we are on
 inputs = [] #initializing list of inputs, will be cleared at the start of each new image
-alpha = .01 #setting alpha to .01
+alpha = 1 #setting alpha to .01
 
 
 #initializing the weights, all to 1?
+#turning weights into a matrix, 784 x 10 (i for each number)
 weights = []
+weight_rows = []
 i = 0
-for i in range(784):
-    weights.append(1)
+j = 0
+for j in range(10):
+    i = 0
+    weight_rows.clear()
+    for i in range(784):
+        weight_rows.append(1)
+
+    weights.append(weight_rows)
     
 #initializing list of correct guesses
 correct_guess = []
 i = 0
 for i in range(784):
     correct_guess.append(train_labels[i])
+    
+#initializing list of possible predictions
+possible_predictions = [0,1,2,3,4,5,6,7,8,9]
     
 #loop continues until we have gone thru every image in the training set
 while (img_num <= ntrimages):
@@ -63,27 +70,62 @@ while (img_num <= ntrimages):
     #once the loop has finished adding to the inputs list (each pixel of the image), now we perform neural network calculations
     
     prediction = neural_network(inputs,weights)
-    
+
     #initializing error vector, vector of 0's
     error = []
     i = 0
-    for i in range(len(inputs)):
+    for i in range(len(prediction)):
         error.append(0)
     
     #initializing delta vector, vector of 0's
     delta = []
     i = 0
-    for i in range(len(inputs)):
+    for i in range(len(prediction)):
         delta.append(0)
-        
-    i = 0
-    for i in range(len(correct_guess)):
-        error[i] = ((prediction[i] - correct_guess[i]) ** 2)
-        delta[i] = prediction[i] - correct_guess[i]
     
+    #make list of desired outputs, 1 = correct, 0 = incorrect
+    true = [0,0,0,0,0,0,0,0,0,0]   
+    if(correct_guess[img_num] == 0):
+        true[0] = 1
+    elif(correct_guess[img_num] == 1):
+        true[1] = 1
+    elif(correct_guess[img_num] == 2):
+        true[2] = 1
+    elif(correct_guess[img_num] == 3):
+        true[3] = 1
+    elif(correct_guess[img_num] == 4):
+        true[4] = 1
+    elif(correct_guess[img_num] == 5):
+        true[5] = 1
+    elif(correct_guess[img_num] == 6):
+        true[6] = 1
+    elif(correct_guess[img_num] == 7):
+        true[7] = 1
+    elif(correct_guess[img_num] == 8):
+        true[8] = 1
+    elif(correct_guess[img_num] == 9):
+        true[9] = 1
+        
+    
+    
+    i = 0
+    for i in range(len(true)):
+        error[i] = ((prediction[i] - true[i]) ** 2)
+        delta[i] = prediction[i] - true[i]
+    
+    weight_deltas = p.outer_product(delta,inputs)
+    #print(len(weight_deltas))
+
+    i = 0
+    j = 0
+    
+    for i in range(len(weights)):
+        for j in range (len(weights[0])):
+            weights[i][j] -= alpha * weight_deltas[i][j]
     #moving the the next image
     img_num += 1
-
+    
+    #print(weights)
 # plt.imshow(train_images[0], cmap=cm.Greys)
 # plt.title(train_labels[0])
 # plt.grid()
