@@ -1,25 +1,15 @@
 #UPDATES:
 
-#Getting there man just hard to understand IDK!!! Keep working
-#Current error:  RuntimeWarning: invalid value encountered in double_scalars -- out[i][j] = vec_a[i] * vec_b[j]
-
-#how do I solve this error first, then see if weight updates make literally any sense whatsoeover
+#The weights dont seem to be updating fr after the last step. I hve no idea why... Try using different data type?
+#using numpy arrays instead.
 
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import chap_5_img_reader as m
 
+import numpy as np
 #importing the math functions module u created
 import math_func_practice as p
-
-#neural network function
-
-def neural_network(inputs,weights):
-    
-    #multiplying each input by each corresponding weight
-    
-    prediction = p.vect_matrix_multiplication(inputs,weights)
-    return prediction
 
 #calling the reader function and setting vars equal to the data
 #ntrimages = number of training images (60,000)
@@ -30,34 +20,49 @@ y = 0
 
 img_num = 0 #what img number we are on
 inputs = [] #initializing list of inputs, will be cleared at the start of each new image
-alpha = 1 #setting alpha to .01
+alpha = .01 #setting alpha to .01
 
 
 #initializing the weights, all to 1?
-#turning weights into a matrix, 784 x 10 (i for each number)
-weights = []
-weight_rows = []
-i = 0
-j = 0
-for j in range(10):
-    i = 0
-    weight_rows.clear()
-    for i in range(784):
-        weight_rows.append(1)
+#turning weights into a matrix, 10 x 784 (i for each number)
+weights = np.ones((10,784))
 
-    weights.append(weight_rows)
+
+# weight_rows = []
+# i = 0
+# j = 0
+# for j in range(10):
+#     i = 0
+#     weight_rows.clear()
+#     for i in range(784):
+#         weight_rows.append(1)
+# 
+#     weights.append(weight_rows)
     
+#print(weights)
+#print(len(weights))
 #initializing list of correct guesses
 correct_guess = []
 i = 0
-for i in range(784):
+for i in range(ntrimages):
     correct_guess.append(train_labels[i])
     
 #initializing list of possible predictions
 possible_predictions = [0,1,2,3,4,5,6,7,8,9]
+#neural network function
+
+def neural_network(inp,weight):
+    
+    #multiplying each input by each corresponding weight
+    #print(len(weights))
+    prediction = p.vect_matrix_multiplication(inp,weight)
+    #print(prediction)
+    pred = p.percenter(prediction)
+    #print(pred)
+    return pred
     
 #loop continues until we have gone thru every image in the training set
-while (img_num <= ntrimages):
+while (img_num < ntrimages):
     
     inputs.clear()
     
@@ -111,24 +116,67 @@ while (img_num <= ntrimages):
     i = 0
     for i in range(len(true)):
         error[i] = ((prediction[i] - true[i]) ** 2)
+        #print('error',error[i])
         delta[i] = prediction[i] - true[i]
+        #print('delta',delta[i])
     
     weight_deltas = p.outer_product(delta,inputs)
-    #print(len(weight_deltas))
-
+    
     i = 0
     j = 0
-    
+
     for i in range(len(weights)):
         for j in range (len(weights[0])):
+            #print(weight_deltas[i][j])
             weights[i][j] -= alpha * weight_deltas[i][j]
-    #moving the the next image
+        
+    #moving the the next image       
+                
     img_num += 1
+
+print('Done training, time to test.')
+
+
+#done training, now lets test the weights
+   
+correct_guess_2 = []
+i = 0
+for i in range(nteimages):
+    correct_guess_2.append(test_labels[i])
+
+inputs_2 = []
+img_num_2 = 0
+
+while (img_num_2 < nteimages):
     
-    #print(weights)
-# plt.imshow(train_images[0], cmap=cm.Greys)
-# plt.title(train_labels[0])
-# plt.grid()
-# plt.show()
+    inputs_2.clear()
+    
+    x = 0
+    y = 0
+    for x in range (0,28):
+        for y in range (0,28):
+        
+            inputs_2.append((test_images[img_num_2])[x][y])
+            
+    prediction_2 = neural_network(inputs_2,weights)
+    
+    if(p.chooseNum(prediction_2) == correct_guess_2[img_num_2]):
+        print(1)
+    else:
+        print(0)
+        
+    
+    img_num_2 += 1
+    
+
+#print('imgnum',img_num)
+    
+    
+
+# 
+#     plt.imshow(train_images[255], cmap=cm.Greys)
+#     plt.title(train_labels[255])
+#     plt.grid()
+#     plt.show()
 # 
 # 

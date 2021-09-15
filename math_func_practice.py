@@ -8,13 +8,13 @@ vec_b = [1,2,3,4]
 def outer_product(vec_a, vec_b):
     
     out = np.zeros((len(vec_a),len(vec_b)))
-    print(out)
+    #print(out)
     i = 0
     j = 0
     for i in range(len(vec_a)):
         for j in range(len(vec_b)):
             out[i][j] = vec_a[i] * vec_b[j]
-    print(out)
+    #print(out)
     return out
 
 def vect_matrix_multiplication(vect, matrix):
@@ -72,5 +72,49 @@ def weighted_sum(a,b):
     c = elementwise_multiplication(a,b)
     return vector_sum(c)
 
+#method will turn the prediction values into a guess, 0 - 1 (percentage)
 
-# print(vector_average(vec_a))
+def percenter(input):
+    
+    output = [0,0,0,0,0,0,0,0,0,0]
+    total = vector_sum(input)
+    
+    i = 0
+    for i in range(len(input)):
+        
+
+        output[i] = input[i]/total
+        
+    return output
+
+#method to choose the top guess choice based on the percents
+
+def chooseNum(input):
+    
+    i = 0
+    choice = 0
+    for i in range(len(input)):
+        if (input[i] > choice):
+            choice = i
+            
+    return choice
+
+
+#method to test why weights arent holding correct value
+# def weight_holder(wt,i,j):
+#     
+#     weights = []
+#     weight_rows = []
+#     i = 0
+#     j = 0
+#     for j in range(10):
+#         i = 0
+#         weight_rows.clear()
+#         for i in range(784):
+#             weight_rows.append(1)
+# 
+#         weights.append(weight_rows)
+#         
+#     weights[i][j] = wt
+
+
