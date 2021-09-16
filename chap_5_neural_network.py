@@ -134,11 +134,19 @@ while (img_num < ntrimages):
                 
     img_num += 1
 
+#saving these weights to a csv file in case I want to jump right into testing on a previously trained set of weights
+np.savetxt('output.csv',weights,delimiter=",")
+
 print('Done training, time to test.')
 
 
 #done training, now lets test the weights
    
+#these values will be used to see at what percent this bot guesses the correct numbers
+num_correct_guesses = 0
+total_guesses = 0
+
+
 correct_guess_2 = []
 i = 0
 for i in range(nteimages):
@@ -161,14 +169,13 @@ while (img_num_2 < nteimages):
     prediction_2 = neural_network(inputs_2,weights)
     
     if(p.chooseNum(prediction_2) == correct_guess_2[img_num_2]):
-        print(1)
-    else:
-        print(0)
+        num_correct_guesses += 1
         
-    
+    total_guesses += 1
     img_num_2 += 1
     
 
+print('This bot correctly guessed the number ', num_correct_guesses/total_guesses, ' percent of the time.')
 #print('imgnum',img_num)
     
     
